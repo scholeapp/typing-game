@@ -262,9 +262,10 @@ function getRandomInt(max) {
 }
 
 function readAloud(text) {
-  const msg = new SpeechSynthesisUtterance(text)
-  msg.pitch = 1
-  window.speechSynthesis.speak(msg)
+  const ssu = new SpeechSynthesisUtterance(text)
+  ssu.lang = "en-US"
+  ssu.pitch = 1
+  window.speechSynthesis.speak(ssu)
 }
 
 function drawScore() {
