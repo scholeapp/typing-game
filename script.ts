@@ -1,64 +1,11 @@
-const words = [
-  {text: 'event', japanese: 'イベント'},
-  {text: 'if', japanese: 'もし'},
-  {text: 'else', japanese: 'その他'},
-  {text: 'pass', japanese: 'パス'},
-  {text: 'break', japanese: '壊す'},
-  {text: 'continue', japanese: '続く'},
-  {text: 'integer', japanese: '整数'},
-  {text: 'variable', japanese: '変数'},
-  {text: 'function', japanese: '関数'},
-  {text: 'define', japanese: '定義する'},
-  {text: 'list', japanese: 'リスト'},
-  {text: 'dictionary', japanese: '辞書'},
-  {text: 'while', japanese: '〜の間'},
-  {text: 'type', japanese: 'タイプ'},
-  {text: 'undefined', japanese: '定義されてない'},
-  {text: 'default', japanese: 'デフォルト'},
-  {text: 'class', japanese: 'クラス'},
-  {text: 'method', japanese: 'メソッド'},
-  {text: 'get', japanese: '取る'},
-  {text: 'set', japanese: 'セット'},
-  {text: 'super', japanese: 'スーパー'},
-  {text: 'True', japanese: '真'},
-  {text: 'False', japanese: '偽'},
-  {text: 'append', japanese: '追加する'},
-  {text: 'item', japanese: 'アイテム'},
-  {text: 'string', japanese: 'ひも・文字列'},
-  {text: 'insert', japanese: '差し込む、はめ込む'},
-  {text: 'key', japanese: '鍵・キー'},
-  {text: 'value', japanese: '値・価値'},
-  {text: 'index', japanese: '索引・順番の数'},
-  {text: 'remove', japanese: '削除する・取り除く'},
-  {text: 'count', japanese: '数える'},
-  {text: 'sort', japanese: '並べ替える'},
-  {text: 'reverse', japanese: '逆順にする'},
-  {text: 'pop', japanese: '飛び出す・飛び出させる'},
-  {text: 'print', japanese: '印刷する'},
-  {text: 'input', japanese: '入力'},
-  {text: 'exception', japanese: '例外'},
-  {text: 'error', japanese: 'エラー'},
-  {text: 'trace', japanese: '追跡する、さかのぼって調べる'},
-  {text: 'read', japanese: '読む'},
-  {text: 'write', japanese: '書く'},
-  {text: 'load', japanese: ' 読み込む'},
-  {text: 'module', japanese: 'モジュール'},
-  {text: 'import', japanese: '輸入・インポート'},
-  {text: 'name', japanese: '名前'},
-  {text: 'open', japanese: '開く'},
-  {text: 'close', japanese: '閉じる'},
-  {text: 'comment', japanese: 'コメント'},
-  {text: 'data', japanese: 'データ'},
-  {text: 'loop', japanese: 'ループ・輪・繰り返し'},
-  {text: 'pair', japanese: 'ペア'},
-  {text: 'random', japanese: 'ランダム'},
-  {text: 'choice', japanese: '選択'}
-]
+import { Enemy, Pellet } from "./types"
+import { getRandomInt, readAloud } from "./utils"
+import { words } from "./words"
 
 const MAX_VISIBLE_WORDS = 1
 
-const canvas = document.getElementById('canvas')
-const ctx = canvas.getContext("2d")
+const canvas = document.getElementById('canvas') as HTMLCanvasElement
+const ctx = canvas.getContext("2d") as CanvasRenderingContext2D
 
 const padding = 3
 
@@ -75,21 +22,35 @@ const pelletRadiusY = 9
 const pelletVelocity = 5
 const pelletAngVelocity = 0.2
 
-const pellets = []
 
-ctx.font = "24px monospace";
+const pellets: Pellet[]  = []
 
-const lasers = []
-const enemies = []
+let level = 1
+let isOpening = true
+let isGameover = false
+const enemies: Enemy[] = []
+const minDy = 0.8
+
+const tryAgainButtonWidth = 100
+const tryAgainButtonHeight = 40
+const tryAgainButtonX = (canvas.width - tryAgainButtonWidth ) / 2
+const tryAgainButtonY = 160
+
 let score = 0
+let correctTypes = 0
+let startTime = new Date()
+let typos = 0
+
 
 document.addEventListener("keydown", keyDownHandler, false)
 
-function sortEnemies(e1, e2) {
+document.addEventListener('click', clickHandler, false)
+
+function sortEnemies(e1: Enemy, e2: Enemy) {
   return e1.y - e2.y
 }
 
-function keyDownHandler(event) {
+function keyDownHandler(event: KeyboardEvent) {
   let enemy = undefined
   const sortedEnemies = enemies.sort(sortEnemies)
   for (let i = 0; i < enemies.length; i++) {
@@ -118,12 +79,33 @@ function keyDownHandler(event) {
       y: towerY - (pelletRadiusX + pelletRadiusY) / 2 / 2,
       rotation: getRandomInt(180),
       visible: true,
-      target: enemy.id
+      target: enemy.id,
+      key: event.key
     })
     enemy.text = enemy.text.slice(1)
     enemy.focus = true
     return
   } 
+}
+
+function clickHandler(event: MouseEvent) {
+  const rect = canvas.getBoundingClientRect()
+  const x = event.clientX - rect.left
+  const y = event.clientY - rect.top
+  if (!isGameover) {
+    return
+  }
+  if (x > tryAgainButtonX
+    && x < tryAgainButtonX + tryAgainButtonWidth
+    && y > tryAgainButtonY
+    && y < tryAgainButtonY + tryAgainButtonHeight
+    ) {
+      isGameover = false
+      console.log('clicked')
+      return
+    }
+    console.log('not clicked')
+
 }
 
 function clear() {
@@ -147,6 +129,10 @@ function drawPellets() {
     const enemy = enemies.find(function(e) {
       return e.id === pellet.target
     })
+    if (enemy === undefined) {
+      console.warn(pellet, 'does not have corresponding target enemy')
+      continue
+    }
     const textMetrics = ctx.measureText(enemy.text)
     const enemyWidth = textMetrics.width
     const dx = (enemy.x - enemyWidth / 2) - canvas.width / 2
@@ -176,6 +162,10 @@ function detectCollision() {
     const enemy = enemies.find(function(enemy) {
       return enemy.id === pellet.target
     })
+    if (enemy === undefined) {
+      console.warn(pellet, 'does not have corresponding target enemy')
+      continue
+    }
     if (!enemy.visible|| !pellet.visible) {
       continue
     }
@@ -199,22 +189,36 @@ function drawEnemies() {
       continue
     }
     ctx.textAlign = "end";
-    ctx.fillStyle = enemy.focus ? "#DD9500" : "#0095DD"
+    let visibility = 0
+    if (enemy.y < 50) {
+      visibility = 0
+    }
+    if (enemy.y < 200) {
+      visibility = (enemy.y - 50) / 150
+    } else if (enemy.y > 200) {
+      visibility = 1.0
+    }
+    ctx.fillStyle = enemy.focus ? "#DD9500" : `rgba(0, 149, 221, ${visibility})`  // #0095DD == rgba(0, 149, 221, 100)
     ctx.font = "24px monospace";
-    const textMetrics = ctx.measureText(enemy.text)
-    const enemyWidth = textMetrics.width
+    const enemyWidth = getWidth(enemy.text)
     if (enemyWidth + padding > enemy.x) {
       // 文字が画面からはみ出るのを防止
       enemy.x = enemyWidth + padding
     }
     ctx.fillText(enemy.visibleText, enemy.x, enemy.y);  
-    ctx.font = "12px monospace";
+    ctx.font = "14px Ariel";
+    const jaWidth = getWidth(enemy.japanese)
+    if ( jaWidth + padding > enemy.x) {
+      enemy.x = jaWidth + padding
+    }
+    ctx.fillStyle = enemy.focus ? "#DD9500" : '#0095DD'
     ctx.fillText(enemy.japanese,    enemy.x, enemy.y + enemyApproxHeight + 10);  
     enemy.y += enemy.dy
+
+    // 最下部に到達したらゲームオーバー
     if (enemy.y > canvas.height && enemy.text.length > 0) {
       enemy.visible = false
-      gameover()
-
+      isGameover = true
     }
   }
 }
@@ -229,7 +233,7 @@ function addEnemyIfNeccesary() {
   const ix = getRandomInt(words.length - 1)
   let x = getRandomInt(canvas.width)
   const word = words[ix]
-  const dy = Math.max(Math.random(), 0.02)
+  const dy = Math.max(Math.random(), minDy)
 
   ctx.font = "24px monospace";
   const textMetricsEn = ctx.measureText(word.text)
@@ -240,33 +244,25 @@ function addEnemyIfNeccesary() {
     // 文字が画面からはみ出るのを防止
     x = enemyWidth + padding
   }
+
+  const newEnemy: Enemy = {id: enemyId,
+    x: x,
+    y: 0,
+    text: word.text,
+    dy: dy,
+    visibleText: word.text,
+    visible: true,
+    japanese: word.japanese,
+    focus: false,
+  }
   
   enemies.push(
-    {id: enemyId,
-      x: x,
-      y: 0,
-      text: word.text,
-      dy: dy,
-      visibleText: word.text,
-      visible: true,
-      japanese: word.japanese,
-      focus: false,
-    }
+    
   )
-  readAloud(word.text)
+  for (let i = 0; i < 3; i++) {
+    readAloud(word.text)
+  }  
   enemyId++
-}
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
-}
-
-function readAloud(text) {
-  const ssu = new SpeechSynthesisUtterance(text)
-  ssu.lang = "en-US"
-  ssu.pitch = 1.6
-  // const voices = window.speechSynthesis.getVoices().filter(v => v.lang == 'en-US');
-  window.speechSynthesis.speak(ssu)
 }
 
 function drawScore() {
@@ -277,19 +273,46 @@ function drawScore() {
 }
 
 function gameover() {
-  alert("GAME OVER. スコア: " + score.toString())
-  document.location.reload()
+  if (!isGameover) {
+    return
+  }
+  ctx.font = "24px Arial"
+  const gameoverWidth = getWidth('GAME OVER')
+  
+  ctx.fillText('GAME OVER', (canvas.width - gameoverWidth) / 2, 120)
+  ctx.font = "16px Arial"
+  ctx.fillText(`スコア: ${score}`, 100, 250)
+  ctx.roundRect(tryAgainButtonX, tryAgainButtonY, tryAgainButtonWidth, tryAgainButtonHeight, 8)
+  ctx.fillStyle = "#0095DD"
+  ctx.fill()
+  ctx.fillStyle = "#FFF"
+  const textMetrics = ctx.measureText('もういちど')
+  const textWidth = textMetrics.width
+  ctx.fillText('もういちど', (canvas.width - textWidth) / 2, tryAgainButtonY + 28)
 }
 
+function getWidth(text: string) {
+  const textMetrics = ctx.measureText(text)
+  const textWidth = textMetrics.width
+  return textWidth
+}
+
+function drawOpening() {
+  
+}
 
 function draw() {
-  clear()
-  drawTower()
-  drawPellets()
-  drawEnemies()
-  detectCollision()
-  addEnemyIfNeccesary()
-  drawScore()
+  if (!isGameover) {
+    clear()
+    drawTower()
+    drawPellets()
+    drawEnemies()
+    detectCollision()
+    addEnemyIfNeccesary()
+    drawScore()
+    gameover()
+  }
+  
   requestAnimationFrame(draw)
 }
 draw()
