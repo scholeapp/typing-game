@@ -1,4 +1,4 @@
-import { getRandomInt } from "./utils";
+import { getRandomInt, readAloud } from "./utils";
 import { words } from "./words";
 const MAX_VISIBLE_WORDS = 1;
 const canvas = document.getElementById('canvas');
@@ -217,7 +217,7 @@ function addEnemyIfNeccesary() {
         // 文字が画面からはみ出るのを防止
         x = enemyWidth + padding;
     }
-    enemies.push({ id: enemyId,
+    const newEnemy = { id: enemyId,
         x: x,
         y: 0,
         text: word.text,
@@ -226,18 +226,12 @@ function addEnemyIfNeccesary() {
         visible: true,
         japanese: word.japanese,
         focus: false,
-    });
+    };
+    enemies.push();
     for (let i = 0; i < 3; i++) {
         readAloud(word.text);
     }
     enemyId++;
-}
-function readAloud(text) {
-    const ssu = new SpeechSynthesisUtterance(text);
-    ssu.lang = "en-US";
-    ssu.pitch = 1.6;
-    // const voices = window.speechSynthesis.getVoices().filter(v => v.lang == 'en-US');
-    window.speechSynthesis.speak(ssu);
 }
 function drawScore() {
     ctx.font = "16px Arial";
@@ -261,6 +255,11 @@ function gameover() {
     const textMetrics = ctx.measureText('もういちど');
     const textWidth = textMetrics.width;
     ctx.fillText('もういちど', (canvas.width - textWidth) / 2, tryAgainButtonY + 28);
+}
+function getWidth(text) {
+    const textMetrics = ctx.measureText(text);
+    const textWidth = textMetrics.width;
+    return textWidth;
 }
 function drawOpening() {
 }
