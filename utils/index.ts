@@ -1,2 +1,2 @@
-export * from './getRandomInt'
-export * from './readAloud'
+export * from './getRandomInt.js'
+export * from './readAloud.js'

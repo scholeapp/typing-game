@@ -1,5 +1,5 @@
-import { getRandomInt, readAloud } from "./utils";
-import { words } from "./words";
+import { getRandomInt, readAloud } from "./utils/index.js";
+import { words } from "./words.js";
 const MAX_VISIBLE_WORDS = 1;
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext("2d");
@@ -217,7 +217,8 @@ function addEnemyIfNeccesary() {
         // 文字が画面からはみ出るのを防止
         x = enemyWidth + padding;
     }
-    const newEnemy = { id: enemyId,
+    const newEnemy = {
+        id: enemyId,
         x: x,
         y: 0,
         text: word.text,
@@ -227,10 +228,8 @@ function addEnemyIfNeccesary() {
         japanese: word.japanese,
         focus: false,
     };
-    enemies.push();
-    for (let i = 0; i < 3; i++) {
-        readAloud(word.text);
-    }
+    enemies.push(newEnemy);
+    readAloud([word.text, word.text].join(' ! '));
     enemyId++;
 }
 function drawScore() {

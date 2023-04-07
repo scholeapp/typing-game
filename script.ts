@@ -1,6 +1,6 @@
-import { Enemy, Pellet } from "./types"
-import { getRandomInt, readAloud } from "./utils"
-import { words } from "./words"
+import { Enemy, Pellet } from "./types.js"
+import { getRandomInt, readAloud } from "./utils/index.js"
+import { words } from "./words.js"
 
 const MAX_VISIBLE_WORDS = 1
 
@@ -245,7 +245,8 @@ function addEnemyIfNeccesary() {
     x = enemyWidth + padding
   }
 
-  const newEnemy: Enemy = {id: enemyId,
+  const newEnemy: Enemy = {
+    id: enemyId,
     x: x,
     y: 0,
     text: word.text,
@@ -256,12 +257,8 @@ function addEnemyIfNeccesary() {
     focus: false,
   }
   
-  enemies.push(
-    
-  )
-  for (let i = 0; i < 3; i++) {
-    readAloud(word.text)
-  }  
+  enemies.push(newEnemy)
+  readAloud([word.text, word.text].join(' ! '))
   enemyId++
 }
 
