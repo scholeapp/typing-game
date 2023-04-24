@@ -6,6 +6,7 @@ const MAX_VISIBLE_WORDS = 1
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D
+const audio = document.getElementById('audio') as HTMLAudioElement
 
 const padding = 3
 
@@ -27,7 +28,7 @@ const pellets: Pellet[]  = []
 
 let level = 1
 const enemies: Enemy[] = []
-const minDy = 0.8
+let minDy = 0.8
 
 const tryAgainButtonWidth = 100
 const tryAgainButtonHeight = 40
@@ -36,7 +37,7 @@ const tryAgainButtonY = 160
 const startButtonWidth = 100
 const startButtonHeight = 40
 const startButtonX = (canvas.width - startButtonWidth) / 2
-const startButtonY = 160
+const startButtonY = 180
 
 let correctTypes = 0
 let startTime = new Date()
@@ -213,7 +214,9 @@ function drawEnemies() {
     }
     ctx.textAlign = "end";
     let visibility = 0
-    if (enemy.y < 50) {
+
+    const visibleAreaMinY = Math.min(50 + game.score * 2, 150)
+    if (enemy.y < visibleAreaMinY) {
       visibility = 0
     }
     if (enemy.y < 200) {
@@ -281,7 +284,7 @@ function addEnemyIfNeccesary() {
   }
   
   enemies.push(newEnemy)
-  readAloud('/assets/' + word.filename)
+  readAloud(audio, word.filename)
   enemyId++
 }
 
@@ -294,6 +297,7 @@ function drawScore() {
 
 function drawGameover() {
   ctx.font = "24px Arial"
+  ctx.fillStyle = "#0095DD"
   const gameoverWidth = getWidth('GAME OVER')
   
   ctx.fillText('GAME OVER', (canvas.width - gameoverWidth) / 2, 120)
@@ -319,7 +323,7 @@ function drawOpening() {
   ctx.fillStyle = "#0095DD"
   const text = 'タイピングゲーム'
   const titleWidth = getWidth(text)
-  ctx.fillText(text, (canvas.width - titleWidth) / 2, startButtonY - 50)
+  ctx.fillText(text, (canvas.width - titleWidth) / 2, startButtonY - 80)
   
   ctx.roundRect(startButtonX, startButtonY, startButtonWidth, startButtonHeight, 8)
   ctx.fillStyle = "#0095DD"
@@ -330,6 +334,7 @@ function drawOpening() {
   const textWidth = textMetrics.width
   ctx.fillText('START', (canvas.width - textWidth) / 2, startButtonY + 28)
 }
+
 
 function draw() {
   clear()
