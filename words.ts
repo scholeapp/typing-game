@@ -1,9 +1,4 @@
-
-type Word = {
-  text: string,
-  japanese: string,
-  filename: string,
-}
+import { Word } from "types";
 
 export const words: Word[] = [
   // { text: "python", japanese: "パイソン" },

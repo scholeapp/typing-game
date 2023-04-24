@@ -8,6 +8,11 @@ export type Pellet = {
 
 export type Game  = {
   scene: 'opening' | 'playing' | 'gameover',
-  enemyId: number,
   score: number,
+}
+
+export type Word = {
+  text: string,
+  japanese: string,
+  filename: string,
 }
