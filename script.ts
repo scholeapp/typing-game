@@ -1,5 +1,5 @@
-import { Enemy, Pellet } from "./types.js"
-import { getRandomInt, readAloud } from "./utils/index.js"
+import { Enemy, Game, Pellet } from "./types.js"
+import { getRandomInt, readAloud, getClickCoordinates } from "./utils/index.js"
 import { words } from "./words.js"
 
 const MAX_VISIBLE_WORDS = 1
@@ -26,8 +26,6 @@ const pelletAngVelocity = 0.2
 const pellets: Pellet[]  = []
 
 let level = 1
-let isOpening = true
-let isGameover = false
 const enemies: Enemy[] = []
 const minDy = 0.8
 
@@ -35,16 +33,26 @@ const tryAgainButtonWidth = 100
 const tryAgainButtonHeight = 40
 const tryAgainButtonX = (canvas.width - tryAgainButtonWidth ) / 2
 const tryAgainButtonY = 160
+const startButtonWidth = 100
+const startButtonHeight = 40
+const startButtonX = (canvas.width - startButtonWidth) / 2
+const startButtonY = 160
 
-let score = 0
 let correctTypes = 0
 let startTime = new Date()
 let typos = 0
 
+const game: Game = {
+  scene: 'opening',
+  score: 0,
+  enemyId: 0,
+}
+
+
 
 document.addEventListener("keydown", keyDownHandler, false)
 
-document.addEventListener('click', clickHandler, false)
+document.addEventListener('click', handleClick, false)
 
 function sortEnemies(e1: Enemy, e2: Enemy) {
   return e1.y - e2.y
@@ -88,25 +96,40 @@ function keyDownHandler(event: KeyboardEvent) {
   } 
 }
 
-function clickHandler(event: MouseEvent) {
-  const rect = canvas.getBoundingClientRect()
-  const x = event.clientX - rect.left
-  const y = event.clientY - rect.top
-  if (!isGameover) {
-    return
-  }
+function handleClick(event: MouseEvent) {
+  switch(game.scene) {
+    case 'opening':
+      start(event)
+      break
+    case 'gameover':
+      restart(event)
+      break
+  }  
+}
+
+function restart(event: MouseEvent) {
+  const {x, y} = getClickCoordinates(canvas, event)
   if (x > tryAgainButtonX
     && x < tryAgainButtonX + tryAgainButtonWidth
     && y > tryAgainButtonY
     && y < tryAgainButtonY + tryAgainButtonHeight
     ) {
-      isGameover = false
-      console.log('clicked')
+      game.scene = 'playing'
       return
     }
-    console.log('not clicked')
-
 }
+
+function start(event: MouseEvent) {
+  const {x, y} = getClickCoordinates(canvas, event)
+  if (x > startButtonX
+    && x < startButtonX + startButtonWidth
+    && y > startButtonY
+    && y < startButtonY + startButtonHeight
+  ) {
+    game.scene = 'playing'
+  }
+}
+
 
 function clear() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -176,7 +199,7 @@ function detectCollision() {
         if (enemy.visibleText.length === 0) {
           enemy.visible = false
           enemy.focus = false
-          score++
+          game.score++
         }
     }
   }
@@ -218,7 +241,7 @@ function drawEnemies() {
     // 最下部に到達したらゲームオーバー
     if (enemy.y > canvas.height && enemy.text.length > 0) {
       enemy.visible = false
-      isGameover = true
+      game.scene = 'gameover'
     }
   }
 }
@@ -258,7 +281,7 @@ function addEnemyIfNeccesary() {
   }
   
   enemies.push(newEnemy)
-  readAloud([word.text, word.text].join(' ! '))
+  readAloud('/assets/' + word.filename)
   enemyId++
 }
 
@@ -266,19 +289,16 @@ function drawScore() {
   ctx.font = "16px Arial"
   ctx.fillStyle = "#0095DD"
   ctx.textAlign = "start";
-  ctx.fillText(`スコア: ${score}`, 8, 20)
+  ctx.fillText(`スコア: ${game.score}`, 8, 20)
 }
 
-function gameover() {
-  if (!isGameover) {
-    return
-  }
+function drawGameover() {
   ctx.font = "24px Arial"
   const gameoverWidth = getWidth('GAME OVER')
   
   ctx.fillText('GAME OVER', (canvas.width - gameoverWidth) / 2, 120)
   ctx.font = "16px Arial"
-  ctx.fillText(`スコア: ${score}`, 100, 250)
+  ctx.fillText(`スコア: ${game.score}`, 100, 250)
   ctx.roundRect(tryAgainButtonX, tryAgainButtonY, tryAgainButtonWidth, tryAgainButtonHeight, 8)
   ctx.fillStyle = "#0095DD"
   ctx.fill()
@@ -295,21 +315,43 @@ function getWidth(text: string) {
 }
 
 function drawOpening() {
+  ctx.font = "24px Arial"
+  ctx.fillStyle = "#0095DD"
+  const text = 'タイピングゲーム'
+  const titleWidth = getWidth(text)
+  ctx.fillText(text, (canvas.width - titleWidth) / 2, startButtonY - 50)
   
+  ctx.roundRect(startButtonX, startButtonY, startButtonWidth, startButtonHeight, 8)
+  ctx.fillStyle = "#0095DD"
+  ctx.fill()
+  ctx.font = "16px Arial"
+  ctx.fillStyle = "#FFF"
+  const textMetrics = ctx.measureText('START')
+  const textWidth = textMetrics.width
+  ctx.fillText('START', (canvas.width - textWidth) / 2, startButtonY + 28)
 }
 
 function draw() {
-  if (!isGameover) {
-    clear()
-    drawTower()
-    drawPellets()
-    drawEnemies()
-    detectCollision()
-    addEnemyIfNeccesary()
-    drawScore()
-    gameover()
+  clear()
+  switch(game.scene) {
+    case 'opening':
+      drawOpening()
+      break
+    case 'playing':
+      drawTower()
+      drawPellets()
+      drawEnemies()
+      detectCollision()
+      addEnemyIfNeccesary()
+      drawScore()
+      break
+    case 'gameover':
+      drawGameover()
+      break
+    default:
+      const _never: never = game.scene
   }
-  
   requestAnimationFrame(draw)
 }
+
 draw()

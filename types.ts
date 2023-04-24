@@ -5,3 +5,9 @@ export type Enemy = {
 export type Pellet = {
   x: number, y: number, rotation: number, visible: boolean, target: Enemy["id"], key: string
 }
+
+export type Game  = {
+  scene: 'opening' | 'playing' | 'gameover',
+  enemyId: number,
+  score: number,
+}
