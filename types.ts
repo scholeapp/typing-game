@@ -4,8 +4,9 @@ export type Enemy = {
   y: number,
   focus: boolean,
   visible: boolean,
-  text: string,
-  receivedText: string,
+  originalText: string,  // this doesn't change
+  remainingText: string,  // internally reduce this text.
+  hitText: string,  // when a pellet hit, it push into hitText
   japanese: string,
   dy: number,
 }

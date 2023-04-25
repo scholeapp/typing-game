@@ -13,7 +13,7 @@ export function drawPellets(canvas, ctx, pellets, enemies) {
             console.warn(pellet, 'does not have corresponding target enemy');
             continue;
         }
-        const textMetrics = ctx.measureText(enemy.text);
+        const textMetrics = ctx.measureText(enemy.remainingText);
         const enemyWidth = textMetrics.width;
         const dx = (enemy.x - enemyWidth / 2) - canvas.width / 2;
         const dy = (enemy.y + enemyApproxHeight / 2) - (canvas.height - towerHeight / 2);

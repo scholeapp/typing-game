@@ -21,12 +21,14 @@ export function detectCollision(pellets: Pellet[], enemies: Enemy[], game: Game)
     if ( enemy.y + enemyApproxHeight > pellet.y &&
       enemy.y < pellet.y) {
         // check collision
-        if (enemy.text.startsWith(enemy.receivedText + pellet.key)) {
-          // check if the right key hits
-          enemy.receivedText += pellet.key
+        console.log(pellet.key)
+        console.log(enemy)
+        if (enemy.originalText.startsWith(enemy.hitText + pellet.key)) {
+          // check if the right key hits. This should be true when max enemies = 1
+          enemy.hitText = enemy.hitText + pellet.key
           pellet.visible = false
         }
-        if (enemy.text === enemy.receivedText) {
+        if (enemy.originalText === enemy.hitText) {
           enemy.visible = false
           enemy.focus = false
           incrementGameScore()

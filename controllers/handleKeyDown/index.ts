@@ -1,45 +1,45 @@
 import { createPellet } from "../../models/index.js"
 import { getTowerCoordinates, pelletRadiusX, pelletRadiusY } from "../../params/index.js"
 import { Enemy, Pellet } from "../../types.js"
-import { getRandomInt } from "../../utils/index.js"
 
 function sortEnemies(e1: Enemy, e2: Enemy) {
   return e1.y - e2.y
+}
+
+function filterVisibleEnemy(enemy: Enemy) {
+  return enemy.visible && enemy.remainingText.length > 0
 }
 
 export function handleKeyDown(event: KeyboardEvent, canvas: HTMLCanvasElement, enemies: Enemy[], pellets: Pellet[]) {
   let enemy = undefined
   const {y: towerY} = getTowerCoordinates(canvas)
 
-  const sortedEnemies = enemies.sort(sortEnemies)
-  for (let i = 0; i < enemies.length; i++) {
-    const currentEnemy = sortedEnemies[i]
-    if (!currentEnemy.visible || currentEnemy.text.length === 0) {
-      continue
-    }
+  const visibleEnemies = enemies
+    .sort(sortEnemies)
+    .filter(filterVisibleEnemy)
+  
+  for (let i = 0; i < visibleEnemies.length; i++) {
+    const currentEnemy = visibleEnemies[i]
     if (currentEnemy.focus) {
       enemy = currentEnemy
       break
     }
-    if (currentEnemy.text[0].toLocaleLowerCase() === event.key) {
+    if (currentEnemy.remainingText[0].toLocaleLowerCase() === event.key) {
       enemy = currentEnemy
     }
   }
   if (enemy === undefined) {
+    // hit no enemy
     return 
   }
-  if (enemy.text[0] === undefined) {
-    console.log(enemy)
-    console.log(enemy.text)
-  }
-  if (enemy.text[0].toLocaleLowerCase() === event.key) {
+  if (enemy.remainingText[0].toLocaleLowerCase() === event.key) {
     createPellet(
       (canvas.width - (pelletRadiusX + pelletRadiusY) / 2) / 2,
       towerY - (pelletRadiusX + pelletRadiusY) / 2 / 2,
       enemy.id,
       event.key
     )
-    enemy.text = enemy.text.slice(1)
+    enemy.remainingText = enemy.remainingText.slice(1)
     enemy.focus = true
     return
   } 
