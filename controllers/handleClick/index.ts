@@ -1,6 +1,6 @@
-import { Game } from "types"
-import { restart } from "./restart"
-import { start } from "./start"
+import { Game } from "../../types.js"
+import { restart } from "./restart.js"
+import { start } from "./start.js"
 
 export function handleClick(canvas:HTMLCanvasElement, event: MouseEvent, game: Game) {
   switch(game.scene) {

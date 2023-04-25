@@ -1,6 +1,6 @@
-import { Game } from "types"
-import { getClickCoordinates } from "./getClickCoordinates"
-import { resetGame } from "models/game"
+import { Game } from "../../types.js"
+import { getClickCoordinates } from "./getClickCoordinates.js"
+import { resetGame } from "../../models/index.js"
 
 export function restart(canvas: HTMLCanvasElement,  event: MouseEvent, game: Game) {
   const {x, y} = getClickCoordinates(canvas, event)

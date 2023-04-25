@@ -1,5 +1,5 @@
-import { getStartbuttonCoordinates } from "params/index.js";
-import { getWidth } from "utils/index.js";
+import { getStartbuttonCoordinates } from "../params/index.js";
+import { getWidth } from "../utils/index.js";
 export function clear(canvas, ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }

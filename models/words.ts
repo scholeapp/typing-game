@@ -1,4 +1,4 @@
-import { Word } from "types";
+import { Word } from "../types.js";
 
 export const words: Word[] = [
   // { text: "python", japanese: "パイソン" },

@@ -1,5 +1,5 @@
-import { enemyApproxHeight, getTowerCoordinates, pelletAngVelocity, pelletRadiusX, pelletRadiusY, pelletVelocity } from "params/index.js"
-import { Enemy, Pellet } from "types"
+import { enemyApproxHeight, getTowerCoordinates, pelletAngVelocity, pelletRadiusX, pelletRadiusY, pelletVelocity } from "../params/index.js"
+import { Enemy, Pellet } from "../types.js"
 
 export function drawPellets(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, pellets: Pellet[], enemies: Enemy[]) {
   const{height: towerHeight} = getTowerCoordinates(canvas)

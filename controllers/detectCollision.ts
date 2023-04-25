@@ -1,6 +1,6 @@
-import { incrementGameScore } from "models/game"
-import { enemyApproxHeight } from "params"
-import { Enemy, Game, Pellet } from "types"
+import { incrementGameScore } from "../models/index.js"
+import { enemyApproxHeight } from "../params/index.js"
+import { Enemy, Game, Pellet } from "../types.js"
 
 export function detectCollision(pellets: Pellet[], enemies: Enemy[], game: Game) {
   for (let i = 0; i < pellets.length; i++) {
@@ -20,9 +20,13 @@ export function detectCollision(pellets: Pellet[], enemies: Enemy[], game: Game)
     }
     if ( enemy.y + enemyApproxHeight > pellet.y &&
       enemy.y < pellet.y) {
-        pellet.visible = false
-        enemy.visibleText = enemy.visibleText.slice(1)
-        if (enemy.visibleText.length === 0) {
+        // check collision
+        if (enemy.text.startsWith(enemy.receivedText + pellet.key)) {
+          // check if the right key hits
+          enemy.receivedText += pellet.key
+          pellet.visible = false
+        }
+        if (enemy.text === enemy.receivedText) {
           enemy.visible = false
           enemy.focus = false
           incrementGameScore()

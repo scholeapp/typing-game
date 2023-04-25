@@ -1,4 +1,4 @@
-import { getTowerCoordinates } from "params/index.js"
+import { getTowerCoordinates } from "../params/index.js"
 
 export function drawTower(canvas:HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
   const towerCoordinate = getTowerCoordinates(canvas)

@@ -1,4 +1,4 @@
-import { Game } from "types";
+import { Game } from "../types.js";
 
 export function drawScore(ctx: CanvasRenderingContext2D, score: number) {
   ctx.font = "16px Arial"

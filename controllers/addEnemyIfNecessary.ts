@@ -1,8 +1,8 @@
-import { createEnemy } from "models/index.js"
-import { MAX_VISIBLE_WORDS, minDy } from "params/index.js"
-import { Enemy } from "types"
-import { getRandomInt, readAloud } from "utils/index.js"
-import { words } from "words.js"
+import { createEnemy } from "../models/index.js"
+import { MAX_VISIBLE_WORDS, minDy } from "../params/index.js"
+import { Enemy } from "../types.js"
+import { getRandomInt, readAloud } from "../utils/index.js"
+import { words } from "../models/words.js"
 
 const padding = 3
 
@@ -28,8 +28,6 @@ export function addEnemyIfNeccesary(canvas: HTMLCanvasElement, ctx: CanvasRender
     x = enemyWidth + padding
   }
 
-  const newEnemy = createEnemy(x, word)
-  
-  enemies.push(newEnemy)
+  createEnemy(x, word)
   readAloud(audio, word.filename)
 }

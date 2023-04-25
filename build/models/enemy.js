@@ -1,4 +1,4 @@
-import { minDy } from "params";
+import { minDy } from "../params/index.js";
 const enemies = [];
 let enemyId = 0;
 export function createEnemy(x, word) {
@@ -8,15 +8,18 @@ export function createEnemy(x, word) {
         x: x,
         y: 0,
         text: word.text,
+        receivedText: '',
         dy: dy,
-        visibleText: word.text,
         visible: true,
         japanese: word.japanese,
         focus: false,
     };
+    enemies.push(newEnemy);
     enemyId++;
     return newEnemy;
 }
 export function getEnemies() {
     return enemies;
+}
+export function removeEnemy(id) {
 }

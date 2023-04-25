@@ -1,5 +1,5 @@
-import { restart } from "./restart";
-import { start } from "./start";
+import { restart } from "./restart.js";
+import { start } from "./start.js";
 export function handleClick(canvas, event, game) {
     switch (game.scene) {
         case 'opening':

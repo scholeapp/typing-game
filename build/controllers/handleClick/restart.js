@@ -1,5 +1,5 @@
-import { getClickCoordinates } from "./getClickCoordinates";
-import { resetGame } from "models/game";
+import { getClickCoordinates } from "./getClickCoordinates.js";
+import { resetGame } from "../../models/index.js";
 export function restart(canvas, event, game) {
     const { x, y } = getClickCoordinates(canvas, event);
     const tryAgainButtonWidth = 100;

@@ -1,4 +1,4 @@
-import { enemyApproxHeight, getTowerCoordinates, pelletAngVelocity, pelletRadiusX, pelletRadiusY, pelletVelocity } from "params/index.js";
+import { enemyApproxHeight, getTowerCoordinates, pelletAngVelocity, pelletRadiusX, pelletRadiusY, pelletVelocity } from "../params/index.js";
 export function drawPellets(canvas, ctx, pellets, enemies) {
     const { height: towerHeight } = getTowerCoordinates(canvas);
     for (let i = 0; i < pellets.length; i++) {

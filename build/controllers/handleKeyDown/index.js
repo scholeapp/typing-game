@@ -1,5 +1,5 @@
-import { getTowerCoordinates, pelletRadiusX, pelletRadiusY } from "params/index.js";
-import { getRandomInt } from "utils/index.js";
+import { createPellet } from "../../models/index.js";
+import { getTowerCoordinates, pelletRadiusX, pelletRadiusY } from "../../params/index.js";
 function sortEnemies(e1, e2) {
     return e1.y - e2.y;
 }
@@ -28,14 +28,7 @@ export function handleKeyDown(event, canvas, enemies, pellets) {
         console.log(enemy.text);
     }
     if (enemy.text[0].toLocaleLowerCase() === event.key) {
-        pellets.push({
-            x: (canvas.width - (pelletRadiusX + pelletRadiusY) / 2) / 2,
-            y: towerY - (pelletRadiusX + pelletRadiusY) / 2 / 2,
-            rotation: getRandomInt(180),
-            visible: true,
-            target: enemy.id,
-            key: event.key
-        });
+        createPellet((canvas.width - (pelletRadiusX + pelletRadiusY) / 2) / 2, towerY - (pelletRadiusX + pelletRadiusY) / 2 / 2, enemy.id, event.key);
         enemy.text = enemy.text.slice(1);
         enemy.focus = true;
         return;
