@@ -19,8 +19,6 @@ export function detectCollision(pellets, enemies, game) {
         if (enemy.y + enemyApproxHeight > pellet.y &&
             enemy.y < pellet.y) {
             // check collision
-            console.log(pellet.key);
-            console.log(enemy);
             if (enemy.originalText.startsWith(enemy.hitText + pellet.key)) {
                 // check if the right key hits. This should be true when max enemies = 1
                 enemy.hitText = enemy.hitText + pellet.key;

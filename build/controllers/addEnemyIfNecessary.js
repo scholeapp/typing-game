@@ -1,7 +1,7 @@
 import { createEnemy } from "../models/index.js";
-import { MAX_VISIBLE_WORDS, minDy } from "../params/index.js";
+import { MAX_VISIBLE_WORDS } from "../params/index.js";
 import { getRandomInt, readAloud } from "../utils/index.js";
-import { words } from "../models/words.js";
+import { getRandomWord } from "../models/words.js";
 const padding = 3;
 export function addEnemyIfNeccesary(canvas, ctx, enemies, audio) {
     const visibleEnemies = enemies.filter(function (e) {
@@ -10,10 +10,8 @@ export function addEnemyIfNeccesary(canvas, ctx, enemies, audio) {
     if (visibleEnemies.length >= MAX_VISIBLE_WORDS) {
         return;
     }
-    const ix = getRandomInt(words.length - 1);
+    const word = getRandomWord();
     let x = getRandomInt(canvas.width);
-    const word = words[ix];
-    const dy = Math.max(Math.random(), minDy);
     ctx.font = "24px monospace";
     const textMetricsEn = ctx.measureText(word.text);
     ctx.font = "12px monospace";
