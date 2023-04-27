@@ -24,6 +24,13 @@ export function createEnemy(x: number, word: Word) {
   return newEnemy
 }
 
+export function getEnemy(id: number) {
+  const enemy = enemies.find(function(e) {
+    return e.id === id
+  })
+  return enemy
+}
+
 export function getEnemies() {
   return enemies
 }

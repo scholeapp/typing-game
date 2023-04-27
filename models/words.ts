@@ -68,7 +68,6 @@ export function getRandomWord(): Word {
     throw new Error('failed to get word')
   }
   normalizeProbabilities()
-  console.log(wordsWithEnergy)
   return {
     text: word.text,
     japanese: word.japanese,

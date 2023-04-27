@@ -19,6 +19,12 @@ export function createEnemy(x, word) {
     enemyId++;
     return newEnemy;
 }
+export function getEnemy(id) {
+    const enemy = enemies.find(function (e) {
+        return e.id === id;
+    });
+    return enemy;
+}
 export function getEnemies() {
     return enemies;
 }

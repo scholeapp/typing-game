@@ -22,3 +22,12 @@ export function createPellet(x: number, y: number, enemyId: number, key: string)
   pelletId++
   return newPellet
 }
+
+export function anyPelletVisible() {
+  for (let i = 0; i < pellets.length; i++ ) {
+    if (pellets[i].visible) {
+      return true
+    }
+  }
+  return false
+}

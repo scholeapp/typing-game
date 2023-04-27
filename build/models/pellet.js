@@ -18,3 +18,11 @@ export function createPellet(x, y, enemyId, key) {
     pelletId++;
     return newPellet;
 }
+export function anyPelletVisible() {
+    for (let i = 0; i < pellets.length; i++) {
+        if (pellets[i].visible) {
+            return true;
+        }
+    }
+    return false;
+}

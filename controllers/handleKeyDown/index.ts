@@ -2,6 +2,8 @@ import { createPellet } from "../../models/index.js"
 import { getTowerCoordinates, pelletRadiusX, pelletRadiusY } from "../../params/index.js"
 import { Enemy, Pellet } from "../../types.js"
 
+const footsteps =  document.getElementById('footsteps') as HTMLAudioElement
+
 function sortEnemies(e1: Enemy, e2: Enemy) {
   return e1.y - e2.y
 }
@@ -41,6 +43,7 @@ export function handleKeyDown(event: KeyboardEvent, canvas: HTMLCanvasElement, e
     )
     enemy.remainingText = enemy.remainingText.slice(1)
     enemy.focus = true
+    footsteps.play()
     return
   } 
 }

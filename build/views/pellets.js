@@ -1,4 +1,6 @@
+import { anyPelletVisible, getEnemy } from "../models/index.js";
 import { enemyApproxHeight, getTowerCoordinates, pelletAngVelocity, pelletRadiusX, pelletRadiusY, pelletVelocity } from "../params/index.js";
+const footsteps = document.getElementById('footsteps');
 export function drawPellets(canvas, ctx, pellets, enemies) {
     const { height: towerHeight } = getTowerCoordinates(canvas);
     for (let i = 0; i < pellets.length; i++) {
@@ -6,9 +8,7 @@ export function drawPellets(canvas, ctx, pellets, enemies) {
         if (!pellet.visible) {
             continue;
         }
-        const enemy = enemies.find(function (e) {
-            return e.id === pellet.target;
-        });
+        const enemy = getEnemy(pellet.target);
         if (enemy === undefined) {
             console.warn(pellet, 'does not have corresponding target enemy');
             continue;
@@ -30,5 +30,8 @@ export function drawPellets(canvas, ctx, pellets, enemies) {
         pellet.x += vx;
         pellet.y += vy;
         pellet.rotation += pelletAngVelocity;
+    }
+    if (!anyPelletVisible()) {
+        footsteps.pause();
     }
 }

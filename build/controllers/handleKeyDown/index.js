@@ -1,5 +1,6 @@
 import { createPellet } from "../../models/index.js";
 import { getTowerCoordinates, pelletRadiusX, pelletRadiusY } from "../../params/index.js";
+const footsteps = document.getElementById('footsteps');
 function sortEnemies(e1, e2) {
     return e1.y - e2.y;
 }
@@ -30,6 +31,7 @@ export function handleKeyDown(event, canvas, enemies, pellets) {
         createPellet((canvas.width - (pelletRadiusX + pelletRadiusY) / 2) / 2, towerY - (pelletRadiusX + pelletRadiusY) / 2 / 2, enemy.id, event.key);
         enemy.remainingText = enemy.remainingText.slice(1);
         enemy.focus = true;
+        footsteps.play();
         return;
     }
 }

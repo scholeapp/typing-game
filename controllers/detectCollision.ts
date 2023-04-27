@@ -2,6 +2,8 @@ import { incrementGameScore } from "../models/index.js"
 import { enemyApproxHeight } from "../params/index.js"
 import { Enemy, Game, Pellet } from "../types.js"
 
+const dropAudio =  document.getElementById('drop') as HTMLAudioElement
+
 export function detectCollision(pellets: Pellet[], enemies: Enemy[], game: Game) {
   for (let i = 0; i < pellets.length; i++) {
     const pellet = pellets[i]
@@ -25,11 +27,13 @@ export function detectCollision(pellets: Pellet[], enemies: Enemy[], game: Game)
           // check if the right key hits. This should be true when max enemies = 1
           enemy.hitText = enemy.hitText + pellet.key
           pellet.visible = false
-        }
-        if (enemy.originalText === enemy.hitText) {
-          enemy.visible = false
-          enemy.focus = false
-          incrementGameScore()
+          if (enemy.originalText === enemy.hitText) {
+            // if enemy is beaten
+            enemy.visible = false
+            enemy.focus = false
+            incrementGameScore()
+            dropAudio.play()
+          }
         }
     }
   }

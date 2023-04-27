@@ -4,12 +4,6 @@ import { getEnemies } from "./models/enemy.js"
 import { getPellets } from "./models/index.js"
 import { getGame } from "./models/game.js"
 
-let level = 1
-
-let correctTypes = 0
-let startTime = new Date()
-let typos = 0
-
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
 function handleKeyDownEvent(event: KeyboardEvent) {
