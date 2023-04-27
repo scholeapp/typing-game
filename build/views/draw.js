@@ -14,12 +14,12 @@ export function draw() {
             drawOpening(canvas, ctx);
             break;
         case 'playing':
+            addEnemyIfNeccesary(canvas, ctx, enemies, audio);
             drawTower(canvas, ctx);
             drawPellets(canvas, ctx, pellets, enemies);
             drawEnemies(canvas, ctx, game, enemies);
             drawScore(ctx, game.score);
             detectCollision(pellets, enemies, game);
-            addEnemyIfNeccesary(canvas, ctx, enemies, audio);
             break;
         case 'gameover':
             drawGameover(canvas, ctx, game.score);
